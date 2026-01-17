@@ -8,6 +8,6 @@
 
 
 def init_routes(app):
-    @app.route("/", methods=["POST"])
+    @app.route("/", methods=["GET"])
     def yo():
         return "Yo"
