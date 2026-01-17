@@ -1,4 +1,7 @@
+# Main router file
 
+
+# ROUTE SYNTAX
 # @app.route("path", methods=["METHOD"])
 # def foobar():
 #   ...
