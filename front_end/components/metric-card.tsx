@@ -10,7 +10,7 @@ interface MetricCardProps {
   value: string | number
   unit?: string
   data: number[]
-  status?: 'good' | 'warning' | 'bad'
+  status?: 'good' | 'warning' | 'bad' | 'satisfactory'
   icon?: React.ReactNode
 }
 
@@ -19,17 +19,20 @@ export function MetricCard({ title, value, unit, data, status = 'good', icon }: 
     good: '#3b82f6',
     warning: '#f59e0b',
     bad: '#ef4444',
+    satisfactory: '#f59e0b',
   }
 
   const borderClasses = {
     good: 'border-primary/30',
     warning: 'border-yellow-500/30',
+    satisfactory: 'border-yellow-500/30',
     bad: 'border-destructive/30',
   }
 
   const statusBadgeClasses = {
     good: 'bg-green-100 text-green-800',
     warning: 'bg-yellow-100 text-yellow-800',
+    satisfactory: 'border-yellow-500/30',
     bad: 'bg-red-100 text-red-800',
   }
 

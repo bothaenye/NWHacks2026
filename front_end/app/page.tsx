@@ -67,10 +67,10 @@ export default function PostureDashboard() {
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <Activity className="w-8 h-8 text-primary" />
-              <span className="text-balance">PostureGuard AI</span>
+              <span className="text-balance">Shrimply</span>
             </h1>
             <p className="text-muted-foreground mt-1">
-              Real-time posture monitoring & AI coaching
+              Real-time posture monitoring
             </p>
           </div>
           <Button variant="ghost" size="icon" className="rounded-full">
