@@ -34,7 +34,8 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 await videoRef.current.play()
             }
 
-            const socket = io(backendUrl)
+            //const socket = io(backendUrl)
+            const socket = io(process.env.NEXT_PUBLIC_API_URL || backendUrl)
             socketRef.current = socket
 
             socket.on("connect", () => {

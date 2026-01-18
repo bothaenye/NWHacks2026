@@ -156,6 +156,7 @@
   }
 }
 
+
 .scanlines {
   position: relative; 
   overflow: hidden; /* Keeps the scanlines contained */
@@ -168,7 +169,7 @@
   pointer-events: none;
   z-index: 5;
 
-  --line-height: 6px;
+  --line-height: 8px;
 
   background: linear-gradient(
     to bottom,
@@ -189,20 +190,6 @@
   }
 }
 
-/* GOOD — Fallout terminal green */
-.video-tint-good::before {
-  background: rgba(34, 197, 94, 0.2);
-}
-
-/* WARNING — amber */
-.video-tint-warning::before {
-  background: rgba(234, 179, 8, 0.3);
-}
-
-/* BAD — red alert */
-.video-tint-bad::before {
-  background: rgba(239, 68, 68, 0.9);
-}
 
 /*div {
   border: 1px solid red !important;
