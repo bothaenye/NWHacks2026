@@ -10,54 +10,54 @@ import { useFrameCapture } from '@/hooks/useFrameCapture'
 import { usePostureStream } from '@/hooks/usePostureStream'
 
 export default function PostureDashboard() {
-    const { videoRef, metrics, streaming, startStreaming, stopStreaming } =
-        usePostureStream({ backendUrl: 'http://localhost:5000/', fps: 1 })
-    const { captureFrame } = useFrameCapture()
+  const { videoRef, metrics, streaming, startStreaming, stopStreaming } =
+    usePostureStream({ backendUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/', fps: 1 })
+  const { captureFrame } = useFrameCapture()
 
-    const [isVoiceActive, setIsVoiceActive] = useState(false)
-    const [isSpeaking, setIsSpeaking] = useState(false)
+  const [isVoiceActive, setIsVoiceActive] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
 
-    const neckAngle = metrics?.neckAngle ?? 0
-    const spineAlignment = metrics?.shoulderTilt ?? 0
-    const screenDistance = metrics?.stressScore ?? 0
-    const problems = metrics?.problems ?? []
+  const neckAngle = metrics?.neckAngle ?? 0
+  const spineAlignment = metrics?.shoulderTilt ?? 0
+  const screenDistance = metrics?.stressScore ?? 0
+  const problems = metrics?.problems ?? []
+  
 
+  const neckData = [12, 13, 15, 14, 15, 16, 15]
+  const spineData = [90, 91, 92, 91, 92, 93, 92]
+  const distanceData = [60, 62, 65, 64, 65, 66, 65]
 
-    const neckData = [12, 13, 15, 14, 15, 16, 15]
-    const spineData = [90, 91, 92, 91, 92, 93, 92]
-    const distanceData = [60, 62, 65, 64, 65, 66, 65]
+  const tips = [
+    { id: 1, text: 'Shoulders back, chest open', priority: 'high' },
+    { id: 2, text: 'Screen at eye level', priority: 'medium' },
+    { id: 3, text: 'Take a break every 30 minutes', priority: 'low' },
+  ]
 
-    const tips = [
-        { id: 1, text: 'Shoulders back, chest open', priority: 'high' },
-        { id: 2, text: 'Screen at eye level', priority: 'medium' },
-        { id: 3, text: 'Take a break every 30 minutes', priority: 'low' },
-    ]
+  const getNeckStatus = () => {
+    if (neckAngle > 20) return 'bad'
+    if (neckAngle > 15) return 'warning'
+    return 'good'
+  }
 
-    const getNeckStatus = () => {
-        if (neckAngle > 20) return 'bad'
-        if (neckAngle > 15) return 'warning'
-        return 'good'
-    }
+  const getStatus = () => {
+    if (!metrics || !metrics.status) return 'good';
+  return metrics.status;
+  } //metrics?.status ?? 'good'
 
-    const getStatus = () => metrics?.status ?? 'good'
+  const getDistanceStatus = () => {
+    if (!screenDistance) return 'good';
+    if (screenDistance < 50) return 'bad';
+    if (screenDistance < 60) return 'warning';
+    return 'good';
+  }
 
-    const getDistanceStatus = () => {
-        if (screenDistance < 50) return 'bad'
-        if (screenDistance < 60) return 'warning'
-        return 'good'
-    }
-
-    const handleStartStop = async () => {
-        if (!streaming) {
-            await startStreaming() // starts camera + streaming
-        } else {
-            stopStreaming()
-            setIsVoiceActive(false)
-        }
-    }
-
-    const handleCalibrate = () => {
-        console.log('Calibrating posture baseline...')
+  
+  const handleStartStop = async () => {
+    if (!streaming) {
+      await startStreaming() // starts camera + streaming
+    } else {
+      stopStreaming()
+      setIsVoiceActive(false)
     }
 
     return (
