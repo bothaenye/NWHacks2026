@@ -111,13 +111,13 @@ def getPosture(frame_data):
 	issues = []
 
 	if forward_head_bad:
-		issues.append("Forward head")
+		issues.append("Forward head\n")
 
 	if head_tilt_bad:
-		issues.append("Head tilt")
+		issues.append("Head tilt\n")
 
 	if shoulder_bad:
-		issues.append("Uneven shoulders")
+		issues.append("Uneven shoulders\n")
 
 	if not issues:
 		posture = "good"

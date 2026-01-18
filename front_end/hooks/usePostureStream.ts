@@ -6,7 +6,9 @@ export interface PostureMetrics {
     neckAngle: number
     shoulderTilt: number
     stressScore?: number
+    problems: string[]
     status: "good" | "bad" | "satisfactory"
+
     message?: string
 }
 
@@ -40,11 +42,12 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
             })
 
             socket.on("frame_return", (response: any) => {
-                console.log(response)
+                console.log(response["issues"])
                 if (typeof response === 'object') {
                     setMetrics((prev) => ({
                         ...prev,
                         status: response["posture"] as "good" | "bad" | "satisfactory",
+                        problems: response["issues"],
                         neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
                         shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
                         stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),

@@ -7,14 +7,14 @@ import { Card } from '@/components/ui/card'
 
 interface MetricCardProps {
   title: string
-  value: string | number
+  value: string | number | string[]
   unit?: string
-  data: number[]
+  data?: number[]
   status?: 'good' | 'warning' | 'bad' | 'satisfactory'
   icon?: React.ReactNode
 }
 
-export function MetricCard({ title, value, unit, data, status = 'good', icon }: MetricCardProps) {
+export function MetricCard({ title, value, unit, data, icon }: MetricCardProps) {
   const statusColors = {
     good: '#3b82f6',
     warning: '#f59e0b',
@@ -38,7 +38,7 @@ export function MetricCard({ title, value, unit, data, status = 'good', icon }: 
 
   return (
     <Card
-      className={`p-4 bg-card/50 backdrop-blur-sm border ${borderClasses[status]} hover:border-primary/50 transition-colors`}
+      className={`p-4 bg-card/50 backdrop-blur-sm border hover:border-primary/50 transition-colors`}
     >
       {/* Title + Icon + Status Badge */}
       <div className="flex items-center justify-between mb-3">
@@ -47,7 +47,7 @@ export function MetricCard({ title, value, unit, data, status = 'good', icon }: 
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</h3>
         </div>
         {status && (
-          <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${statusBadgeClasses[status]}`}>
+          <span className={`px-2 py-0.5 text-xs font-semibold rounded-full `}>
             {status.toUpperCase()}
           </span>
         )}
@@ -56,10 +56,10 @@ export function MetricCard({ title, value, unit, data, status = 'good', icon }: 
       {/* Value + Unit + Sparkline */}
       <div className="flex items-end justify-between">
         <div>
-          <span className="text-2xl font-bold text-foreground">{value}</span>
+          <span className="text-2xl font-bold text-foreground whitespace-pre-line">{value}</span>
           {unit && <span className="text-sm text-muted-foreground ml-1">{unit}</span>}
         </div>
-        <Sparkline data={data} width={60} height={24} color={statusColors[status]} />
+        {/*<Sparkline data={data} width={60} height={24} color={statusColors[status]} />*/}
       </div>
     </Card>
   )

@@ -20,6 +20,7 @@ export default function PostureDashboard() {
   const neckAngle = metrics?.neckAngle ?? 0
   const spineAlignment = metrics?.shoulderTilt ?? 0
   const screenDistance = metrics?.stressScore ?? 0
+  const problems = metrics?.problems ?? []
   
 
   const neckData = [12, 13, 15, 14, 15, 16, 15]
@@ -114,15 +115,15 @@ export default function PostureDashboard() {
             )}
 
             {/* Floating Right Sidebar - Metrics */}
-            <div className="absolute top-4 right-4 w-50 max-h-[calc(100%-2rem)] overflow-y-auto space-y-3 z-10 [&::-webkit-scrollbar]:hidden">
-              <MetricCard
+            <div className="absolute top-4 right-4 w-75 max-h-[calc(100%-2rem)] overflow-y-auto space-y-3 z-10 [&::-webkit-scrollbar]:hidden">
+              {/*<MetricCard
                 title="Neck Angle"
                 value={neckAngle}
                 unit="°"
                 data={neckData}
                 status={getNeckStatus()}
                 icon={<Activity className="w-4 h-4" />}
-              />
+              />*/}
 
               {/* <MetricCard
                 title="Posture Status"
@@ -134,13 +135,19 @@ export default function PostureDashboard() {
               /> */}
 
               <MetricCard
+                title="Problems"
+                value={problems}
+                status={getDistanceStatus()}
+              />
+
+              {/* <MetricCard
                 title="Distance from Screen"
                 value={screenDistance}
                 unit="cm"
                 data={distanceData}
                 status={getDistanceStatus()}
                 icon={<Activity className="w-4 h-4" />}
-              />
+              /> */}
 
               {/* Quick Tips */}
               <Card className="p-4 glassmorphism border-border/50">
