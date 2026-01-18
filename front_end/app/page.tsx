@@ -21,7 +21,6 @@ export default function PostureDashboard() {
   const spineAlignment = metrics?.shoulderTilt ?? 0
   const screenDistance = metrics?.stressScore ?? 0
   const problems = metrics?.problems ?? []
-  
 
   const neckData = [12, 13, 15, 14, 15, 16, 15]
   const spineData = [90, 91, 92, 91, 92, 93, 92]
@@ -40,18 +39,17 @@ export default function PostureDashboard() {
   }
 
   const getStatus = () => {
-    if (!metrics || !metrics.status) return 'good';
-  return metrics.status;
-  } //metrics?.status ?? 'good'
-
-  const getDistanceStatus = () => {
-    if (!screenDistance) return 'good';
-    if (screenDistance < 50) return 'bad';
-    if (screenDistance < 60) return 'warning';
-    return 'good';
+    if (!metrics || !metrics.status) return 'good'
+    return metrics.status
   }
 
-  
+  const getDistanceStatus = () => {
+    if (!screenDistance) return 'good'
+    if (screenDistance < 50) return 'bad'
+    if (screenDistance < 60) return 'warning'
+    return 'good'
+  }
+
   const handleStartStop = async () => {
     if (!streaming) {
       await startStreaming() // starts camera + streaming
@@ -59,71 +57,67 @@ export default function PostureDashboard() {
       stopStreaming()
       setIsVoiceActive(false)
     }
+  }
 
-    return (
-        <div className="min-h-screen bg-background min-w-[768px] p-4 md:p-6">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="mb-6 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-                            <img src="/favicon.svg" className="w-16 h-16" />
-                            <span className="text-balance">Shrimply</span>
-                        </h1>
-                        <p className="text-muted-foreground mt-1">
-                            Real-time posture monitoring
-                        </p>
-                    </div>
+  return (
+    <div className="min-h-screen bg-background min-w-[768px] p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+              <img src="/favicon.svg" className="w-16 h-16" />
+              <span className="text-balance">Shrimply</span>
+            </h1>
+            <p className="text-muted-foreground mt-1">Real-time posture monitoring</p>
+          </div>
+        </div>
+
+        {/* Main Content - Camera */}
+        <div className="relative">
+          <Card
+            className={`relative aspect-video scanlines bg-card/30 backdrop-blur-sm border-2 overflow-hidden transition-all duration-300 ${
+              streaming
+                ? getStatus() === 'bad'
+                  ? 'neon-glow-red border-destructive/50 video-tint-bad'
+                  : getStatus() === 'satisfactory'
+                  ? 'neon-glow-yellow border-yellow-500/50 video-tint-warning'
+                  : 'neon-glow video-tint-good'
+                : 'border-border'
+            }`}
+          >
+            {/* Video */}
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className={`absolute inset-0 w-full h-full object-cover ${streaming ? '' : 'hidden'}`}
+            />
+
+            {/* Placeholder */}
+            {!streaming && (
+              <div className="absolute inset-0 bg-gradient-to-br from-card via-card/50 to-secondary/30 flex items-center justify-center">
+                <div className="text-center">
+                  <CameraOff className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Camera feed inactive</p>
+                  <p className="text-sm text-muted-foreground/70 mt-1">Click Start to begin monitoring</p>
                 </div>
+              </div>
+            )}
 
-                {/* Main Content - Camera */}
-                <div className="relative">
-                    <Card
-                        className={`relative aspect-video scanlines bg-card/30 backdrop-blur-sm border-2 overflow-hidden transition-all duration-300 ${streaming
-                            ? getStatus() === 'bad'
-                                ? 'neon-glow-red border-destructive/50 video-tint-bad'
-                                : getStatus() === 'satisfactory'
-                                    ? 'neon-glow-yellow border-yellow-500/50 video-tint-warning'
-                                    : 'neon-glow video-tint-good'
-                            : 'border-border'
-                            }`}
-                    >
-
-                        {/* Video */}
-                        <video
-                            ref={videoRef}
-                            autoPlay
-                            playsInline
-                            muted
-                            className={`absolute inset-0 w-full h-full object-cover ${streaming ? '' : 'hidden'
-                                }`}
-                        />
-
-                        {/* Placeholder */}
-                        {!streaming && (
-                            <div className="absolute inset-0 bg-gradient-to-br from-card via-card/50 to-secondary/30 flex items-center justify-center">
-                                <div className="text-center">
-                                    <CameraOff className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                                    <p className="text-muted-foreground">Camera feed inactive</p>
-                                    <p className="text-sm text-muted-foreground/70 mt-1">
-                                        Click Start to begin monitoring
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Floating Right Sidebar - Metrics */}
-                        <div className="absolute top-4 right-4 w-[25%] min-w-[150px] max-w-[320px] h-[75%] min-h-[150px] max-h-[calc(100%-2rem)] overflow-y-auto space-y-3 z-10 [&::-webkit-scrollbar]:hidden">
-                            {/*<MetricCard
+            {/* Floating Right Sidebar - Metrics */}
+            <div className="absolute top-4 right-4 w-[25%] min-w-[150px] max-w-[320px] h-[75%] min-h-[150px] max-h-[calc(100%-2rem)] overflow-y-auto space-y-3 z-10 [&::-webkit-scrollbar]:hidden">
+              {/* <MetricCard
                 title="Neck Angle"
                 value={neckAngle}
                 unit="°"
                 data={neckData}
                 status={getNeckStatus()}
                 icon={<Activity className="w-4 h-4" />}
-              />*/}
+              /> */}
 
-                            {/* <MetricCard
+              {/* <MetricCard
                 title="Posture Status"
                 value={spineAlignment}
                 unit="%"
@@ -132,13 +126,9 @@ export default function PostureDashboard() {
                 icon={<Activity className="w-4 h-4" />}
               /> */}
 
-                            <MetricCard
-                                title="Problems"
-                                value={problems}
-                                status={getDistanceStatus()}
-                            />
+              <MetricCard title="Problems" value={problems} status={getDistanceStatus()} />
 
-                            {/* <MetricCard
+              {/* <MetricCard
                 title="Distance from Screen"
                 value={screenDistance}
                 unit="cm"
@@ -147,60 +137,61 @@ export default function PostureDashboard() {
                 icon={<Activity className="w-4 h-4" />}
               /> */}
 
-                            {/* Quick Tips */}
-                            <Card className="p-4 glassmorphism border-border/50">
-                                <div className="mb-3 flex-1 items-center justify-between">
-                                    <h3 className="text-xs lg:text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
-                                        <Lightbulb className="w-4 h-4 text-primary" /> Quick Tips
-                                    </h3>
-                                </div>
-                                <div className="space-y-2">
-                                    {tips.map((tip, index) => (
-                                        <div
-                                            key={tip.id}
-                                            className="text-xs lg:text-sm text-foreground/80 p-2 bg-secondary/30 rounded-lg animate-fade-in border border-primary/10"
-                                            style={{ animationDelay: `${index * 0.1}s` }}
-                                        >
-                                            <div className="flex items-start gap-2">
-                                                <div
-                                                    className={`w-1.5 h-1.5 rounded-full mt-1.5 ${tip.priority === 'high'
-                                                        ? 'bg-destructive'
-                                                        : tip.priority === 'medium'
-                                                            ? 'bg-yellow-500'
-                                                            : 'bg-primary'
-                                                        }`}
-                                                />
-                                                <span className="text-pretty">{tip.text}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </Card>
-                        </div>
+              {/* Quick Tips */}
+              <Card className="p-4 glassmorphism border-border/50">
+                <div className="mb-3 flex-1 items-center justify-between">
+                  <h3 className="text-xs lg:text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
+                    <Lightbulb className="w-4 h-4 text-primary" /> Quick Tips
+                  </h3>
+                </div>
+                <div className="space-y-2">
+                  {tips.map((tip, index) => (
+                    <div
+                      key={tip.id}
+                      className="text-xs lg:text-sm text-foreground/80 p-2 bg-secondary/30 rounded-lg animate-fade-in border border-primary/10"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <div className="flex items-start gap-2">
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full mt-1.5 ${
+                            tip.priority === 'high'
+                              ? 'bg-destructive'
+                              : tip.priority === 'medium'
+                              ? 'bg-yellow-500'
+                              : 'bg-primary'
+                          }`}
+                        />
+                        <span className="text-pretty">{tip.text}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
 
-                        {/* Bottom Controls */}
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-4 w-max max-w-[90%] justify-center flex-wrap">
-                            <Button
-                                size="lg"
-                                onClick={handleStartStop}
-                                className={`rounded-full transition-transform hover:scale-105 text-xs lg:text-sm px-8 ${streaming
-                                    ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
-                                    : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                                    }`}
-                            >
-                                {streaming ? (
-                                    <>
-                                        <CameraOff className="w-5 h-5 mr-2" /> Stop Monitoring
-                                    </>
-                                ) : (
-                                    <>
-                                        <Camera className="w-5 h-5 mr-2" /> Start Monitoring
-                                    </>
-                                )}
-                            </Button>
+            {/* Bottom Controls */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-4 w-max max-w-[90%] justify-center flex-wrap">
+              <Button
+                size="lg"
+                onClick={handleStartStop}
+                className={`rounded-full transition-transform hover:scale-105 text-xs lg:text-sm px-8 ${
+                  streaming
+                    ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
+                    : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                }`}
+              >
+                {streaming ? (
+                  <>
+                    <CameraOff className="w-5 h-5 mr-2" /> Stop Monitoring
+                  </>
+                ) : (
+                  <>
+                    <Camera className="w-5 h-5 mr-2" /> Start Monitoring
+                  </>
+                )}
+              </Button>
 
-
-                            {/* <Button
+              {/* <Button
                 size="lg"
                 variant="outline"
                 onClick={handleCalibrate}
@@ -211,30 +202,29 @@ export default function PostureDashboard() {
                 Calibrate Posture
               </Button> */}
 
-
-                            {/* <Button
-                                size="lg"
-                                variant="outline"
-                                onClick={() => setIsVoiceActive(!isVoiceActive)}
-                                disabled={!streaming}
-                                className={`rounded-full transition-transform hover:scale-105 px-8 border-primary/30 ${isVoiceActive ? 'bg-primary/20 border-primary' : 'hover:bg-primary/10'
-                                    }`}
-                            >
-                                {isVoiceActive ? (
-                                    <>
-                                        <MicOff className="w-5 h-5 mr-2" /> Disable Voice Coach
-                                    </>
-                                ) : (
-                                    <>
-                                        <Mic className="w-5 h-5 mr-2" /> Enable Voice Coach
-                                    </>
-                                )}
-                            </Button> */}
-                        </div>
-                    </Card>
-                </div>
+              {/* <Button
+                size="lg"
+                variant="outline"
+                onClick={() => setIsVoiceActive(!isVoiceActive)}
+                disabled={!streaming}
+                className={`rounded-full transition-transform hover:scale-105 px-8 border-primary/30 ${
+                  isVoiceActive ? 'bg-primary/20 border-primary' : 'hover:bg-primary/10'
+                }`}
+              >
+                {isVoiceActive ? (
+                  <>
+                    <MicOff className="w-5 h-5 mr-2" /> Disable Voice Coach
+                  </>
+                ) : (
+                  <>
+                    <Mic className="w-5 h-5 mr-2" /> Enable Voice Coach
+                  </>
+                )}
+              </Button> */}
             </div>
+          </Card>
         </div>
-    )
+      </div>
+    </div>
+  )
 }
-
