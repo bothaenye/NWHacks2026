@@ -1,10 +1,10 @@
 # Main event file
-from flask_socketio import emit
+from flask_socketio import send
 
 def init_events(socketio):
-    @socketio.on("yo")
+    @socketio.on("message")
     def yo():
-        return "Yo"
+        send("Hello")
     
 def emitEvents(name, obj):
-    emit(name, obj)
+    return#emit(name, obj)
