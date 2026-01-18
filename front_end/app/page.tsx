@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { io, Socket } from 'socket.io-client'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { MetricCard } from '@/components/metric-card'
@@ -23,7 +24,7 @@ export default function PostureDashboard() {
     const [isSpeaking, setIsSpeaking] = useState(false)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const videoRef = useRef<HTMLVideoElement>(null)
-    const wsRef = useRef<WebSocket | null>(null)
+    const socketRef = useRef<Socket | null>(null)
     const frameIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
     // Mock data for demonstration
@@ -44,7 +45,7 @@ export default function PostureDashboard() {
     useEffect(() => {
         return () => {
             if (frameIntervalRef.current) clearInterval(frameIntervalRef.current)
-            if (wsRef.current) wsRef.current.close()
+            if (socketRef.current) socketRef.current.disconnect()
         }
     }, [])
 
@@ -157,15 +158,15 @@ export default function PostureDashboard() {
                 }
                 setIsMonitoring(true)
 
-                // Initialize WebSocket
-                const ws = new WebSocket('ws://localhost:8000/ws')
-                wsRef.current = ws
+                // Initialize Socket.io
+                const socket = io('http://localhost:5000') // Connect to Flask-SocketIO backend
+                socketRef.current = socket
 
-                ws.onopen = () => {
-                    console.log('Connected to WebSocket')
+                socket.on('connect', () => {
+                    console.log('Connected to Socket.io')
                     // Start sending frames
                     frameIntervalRef.current = setInterval(() => {
-                        if (videoRef.current && ws.readyState === WebSocket.OPEN) {
+                        if (videoRef.current && socket.connected) {
                             const canvas = document.createElement('canvas')
                             canvas.width = videoRef.current.videoWidth
                             canvas.height = videoRef.current.videoHeight
@@ -174,25 +175,29 @@ export default function PostureDashboard() {
                                 ctx.drawImage(videoRef.current, 0, 0)
                                 // Send frame as base64 string
                                 const frameData = canvas.toDataURL('image/jpeg', 0.8)
-                                ws.send(JSON.stringify({ frame: frameData }))
+                                socket.emit('frame', { frame: frameData })
                             }
                         }
                     }, 200) // Send frame every 200ms
-                }
+                })
 
-                ws.onmessage = (event) => {
-                    // Backend sends "good" or "bad"
-                    const status = event.data as 'good' | 'bad'
+                socket.on('message', (metrics: any) => {
+                    // Backend sends "good" or "bad" string for now
+                    // If it sends a JSON object later, we can check typeof metrics
+                    let status: 'good' | 'bad' = 'good'
+                    if (typeof metrics === 'string') {
+                        status = metrics as 'good' | 'bad'
+                    }
                     updateMetrics(status)
-                }
+                })
 
-                ws.onclose = () => {
-                    console.log('WebSocket disconnected')
-                }
+                socket.on('disconnect', () => {
+                    console.log('Socket.io disconnected')
+                })
 
-                ws.onerror = (error) => {
-                    console.error('WebSocket error:', error)
-                }
+                socket.on('connect_error', (error) => {
+                    console.error('Socket.io connection error:', error)
+                })
 
             } catch (err) {
                 console.error('[v0] Error accessing camera:', err)
@@ -206,10 +211,10 @@ export default function PostureDashboard() {
                 videoRef.current.srcObject = null
             }
 
-            // Close WebSocket and clear interval
-            if (wsRef.current) {
-                wsRef.current.close()
-                wsRef.current = null
+            // Close Socket.io and clear interval
+            if (socketRef.current) {
+                socketRef.current.disconnect()
+                socketRef.current = null
             }
             if (frameIntervalRef.current) {
                 clearInterval(frameIntervalRef.current)
