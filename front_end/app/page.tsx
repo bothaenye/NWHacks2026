@@ -190,8 +190,9 @@ export default function PostureDashboard() {
                   </>
                 )}
               </Button>
-
-              <Button
+              
+              
+              {/* <Button
                 size="lg"
                 variant="outline"
                 onClick={handleCalibrate}
@@ -200,7 +201,8 @@ export default function PostureDashboard() {
               >
                 <Zap className="w-5 h-5 mr-2" />
                 Calibrate Posture
-              </Button>
+              </Button> */}
+              
 
               <Button
                 size="lg"
