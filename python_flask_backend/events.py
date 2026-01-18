@@ -5,8 +5,7 @@ from FrameProcessor import getPosture
 def init_events(socketio):
     @socketio.on("frame")
     def recieveFrame(obj):
-        #print(obj)
-        emitEvents('frame_return', getPosture(obj))
+        emitEvents('frame_return', getPosture(obj["frame"]))
     
 def emitEvents(name, obj):
     print("Gorp")

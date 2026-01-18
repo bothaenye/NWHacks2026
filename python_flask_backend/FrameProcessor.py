@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import base64
-from frameDataQ import frame_data
+#from frameDataQ import frame_data
 
 # Decode base64 frame from frontend
 def getPosture(frame_data):
@@ -160,5 +160,3 @@ def getPosture(frame_data):
 	print("Issues:", issues)
 
 	return posture
-
-getPosture(frame_data)
