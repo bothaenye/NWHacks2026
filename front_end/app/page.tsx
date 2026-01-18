@@ -78,13 +78,13 @@ export default function PostureDashboard() {
         {/* Main Content - Camera */}
         <div className="relative">
           <Card
-            className={`relative aspect-video bg-card/30 backdrop-blur-sm border-2 overflow-hidden transition-all duration-300 ${
-              streaming
-                ? neckAngle > 20
-                  ? 'neon-glow-red border-destructive/50'
-                  : 'neon-glow border-primary/50'
-                : 'border-border'
-            }`}
+            className={`relative aspect-video scanlines bg-card/30 backdrop-blur-sm border-2 overflow-hidden transition-all duration-300 ${
+            streaming
+            ? neckAngle > 20
+            ? 'neon-glow-red border-destructive/50'
+            : 'neon-glow border-primary/50'
+            : 'border-border'
+             }`}
           >
             {/* Video */}
             <video

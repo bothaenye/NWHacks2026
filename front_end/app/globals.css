@@ -141,6 +141,33 @@
   }
 }
 
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 2px,
+    rgba(0, 0, 0, 0) 4px,
+    rgba(0, 0, 0, 0) 8px
+  );
+
+  mix-blend-mode: soft-light;
+}
+
+@keyframes scan {
+  from { background-position: 0 0; }
+  to   { background-position: 0 4px; }
+}
+
+.scanlines::after {
+  animation: scan 6s linear infinite;
+}
+
 /*div {
   border: 1px solid red !important;
 }*/
