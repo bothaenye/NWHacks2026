@@ -40,27 +40,21 @@ def getPosture(frame_data):
 
 	h, w, _ = frame.shape
 
-	# Head (nose)
 	H = lm_to_vec(landmarks[mp_pose.PoseLandmark.NOSE], w, h)
 
-	# Shoulders
 	LS = lm_to_vec(landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER], w, h)
 	RS = lm_to_vec(landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER], w, h)
 
-	# Neck (midpoint of shoulders)
 	N = (LS + RS) / 2
 
-	# Choose right shoulder for example
 	S = RS
 
-	# Compute vectors
 	v_head_to_neck = N - H
 	v_neck_to_right_shoulder = S - N
 	v_head_to_right_shoulder = S - H
 	v_neck_to_left_shoulder = LS - N
 	v_head_to_left_shoulder = LS - H
 
-	# Draw vectors on frame
 	def draw_vector(img, start, vec, color):
 		end = start[:2] + vec[:2]
 		cv2.arrowedLine(
@@ -74,8 +68,6 @@ def getPosture(frame_data):
 	draw_vector(frame, H, v_head_to_neck, (0, 255, 0))
 	draw_vector(frame, N, v_neck_to_right_shoulder, (255, 0, 0))
 	draw_vector(frame, H, v_head_to_right_shoulder, (0, 0, 255))
-
-	# Optional: draw left shoulder vector
 	draw_vector(frame, N, v_neck_to_left_shoulder, (255, 255, 0))
 	draw_vector(frame, H, v_head_to_left_shoulder, (0, 255, 255))
 
@@ -107,7 +99,7 @@ def getPosture(frame_data):
 	left_dist = np.linalg.norm(v_head_to_left_shoulder[:2])
 	right_dist = np.linalg.norm(v_head_to_right_shoulder[:2])
 
-	head_tilt_ratio = abs(left_dist - right_dist) / max(left_dist, right_dist)
+	head_tilt_ratio = abs(left_dist - right_dist) / max(left_dist, right_dist) # ratio between tilt and max possible tilt
 	head_tilt_bad = head_tilt_ratio > 0.15  # 15%
 
 	# Shoulder imbalance
@@ -130,11 +122,13 @@ def getPosture(frame_data):
 	if not issues:
 		posture = "good"
 		color = (0, 255, 0)
+	elif len(issues) == 1:
+		posture = "satisfactory"
+		color = (0, 255, 255)
 	else:
 		posture = "bad"
 		color = (0, 0, 255)
 
-	# Draw result on frame
 	cv2.putText(
 		frame,
 		posture,
