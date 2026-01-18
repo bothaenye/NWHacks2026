@@ -34,25 +34,55 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
 
     const { captureFrame } = useFrameCapture()
 
-	// audio
+
+
+
+
+
+
+
 	const badPostureAudioRef = useRef<HTMLAudioElement | null>(null)
     if (!badPostureAudioRef.current) {
         badPostureAudioRef.current = new Audio("/uncurl.mp3")
     }
 
-	// Unlock audio once streaming starts (browser requires a user interaction)
+	"use client";
+
+	function useBadPostureSound() {
+	const badPostureAudioRef = useRef<HTMLAudioElement | null>(null);
+
 	useEffect(() => {
-		if (streaming && badPostureAudioRef.current) {
-			badPostureAudioRef.current.play()
-				.then(() => {
-					badPostureAudioRef.current?.pause(); // pause immediately
-					if (badPostureAudioRef.current) badPostureAudioRef.current.currentTime = 0; // reset
-				})
-				.catch(() => {
-					console.log("Audio unlock failed");
-				});
+		if (!badPostureAudioRef.current) {
+		badPostureAudioRef.current = new Audio("/uncurl.mp3");
 		}
-	}, [streaming]);
+	}, []);
+
+	const play = () => {
+		badPostureAudioRef.current?.play();
+	};
+
+	return { play };
+	}
+
+	// audio
+	// const badPostureAudioRef = useRef<HTMLAudioElement | null>(null)
+    // if (!badPostureAudioRef.current) {
+    //     badPostureAudioRef.current = new Audio("/uncurl.mp3")
+    // }
+
+	// // Unlock audio once streaming starts (browser requires a user interaction)
+	// useEffect(() => {
+	// 	if (streaming && badPostureAudioRef.current) {
+	// 		badPostureAudioRef.current.play()
+	// 			.then(() => {
+	// 				badPostureAudioRef.current?.pause(); // pause immediately
+	// 				if (badPostureAudioRef.current) badPostureAudioRef.current.currentTime = 0; // reset
+	// 			})
+	// 			.catch(() => {
+	// 				console.log("Audio unlock failed");
+	// 			});
+	// 	}
+	// }, [streaming]);
 
 	// end of audio addition
 
@@ -72,12 +102,12 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 console.log("Connected to Socket.io via hook")
             })
 
+
             socket.on("frame_return", (response: any) => {
 				console.log(response["issues"]);
 			
 				setMetrics((prev) => {
-					const newStatus = response.posture as "good" | "bad" | "satisfactory";
-			
+					const newStatus = response.posture as "good" | "bad" | "satisfactory";			
 					if (newStatus === "bad" && prev?.status !== "bad") {
 						badPostureAudioRef.current?.play().catch(() => {});
 						console.log("should play voice");
