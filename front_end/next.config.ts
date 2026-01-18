@@ -1,13 +1,13 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
   typescript: {
-    // This allows the build to finish even if there are type errors
+    // This is still supported and will help you bypass 
+    // those silent crashes you saw earlier
     ignoreBuildErrors: true,
   },
-  eslint: {
-    // This allows the build to finish even if there are linting warnings
-    ignoreDuringBuilds: true,
-  },
+  // DELETE the eslint: { ... } block from here
 };
 
 export default nextConfig;

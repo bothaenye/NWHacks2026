@@ -14,7 +14,7 @@ interface MetricCardProps {
   icon?: React.ReactNode
 }
 
-export function MetricCard({ title, value, unit, data, icon }: MetricCardProps) {
+export function MetricCard({ title, value, unit, data, status, icon, }: MetricCardProps) {
   const statusColors = {
     good: '#3b82f6',
     warning: '#f59e0b',

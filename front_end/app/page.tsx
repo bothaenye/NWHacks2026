@@ -11,7 +11,7 @@ import { usePostureStream } from '@/hooks/usePostureStream'
 
 export default function PostureDashboard() {
   const { videoRef, metrics, streaming, startStreaming, stopStreaming } =
-    usePostureStream({ backendUrl: 'http://localhost:5000/', fps: 1 })
+    usePostureStream({ backendUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/', fps: 1 })
   const { captureFrame } = useFrameCapture()
 
   const [isVoiceActive, setIsVoiceActive] = useState(false)
@@ -39,12 +39,22 @@ export default function PostureDashboard() {
     return 'good'
   }
 
-  const getStatus = () => metrics?.status ?? 'good'
+  const getStatus = () => {
+    if (!metrics || !metrics.status) return 'good';
+  return metrics.status;
+  } //metrics?.status ?? 'good'
 
   const getDistanceStatus = () => {
+<<<<<<< HEAD
     if (screenDistance < 50) return 'bad'
     if (screenDistance < 60) return 'satisfactory'
     return 'good'
+=======
+    if (!screenDistance) return 'good';
+    if (screenDistance < 50) return 'bad';
+    if (screenDistance < 60) return 'warning';
+    return 'good';
+>>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
   }
 
   

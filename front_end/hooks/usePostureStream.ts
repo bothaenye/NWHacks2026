@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { useFrameCapture } from "./useFrameCapture"
@@ -20,7 +22,13 @@ interface UsePostureStreamOptions {
 export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOptions) => {
     const videoRef = useRef<HTMLVideoElement | null>(null)
     const socketRef = useRef<Socket | null>(null)
-    const [metrics, setMetrics] = useState<PostureMetrics | null>(null)
+    const [metrics, setMetrics] = useState<PostureMetrics>({
+        neckAngle: 0,
+        shoulderTilt: 0,
+        stressScore: 0,
+        problems: [],
+        status: "good",
+      })
     const [streaming, setStreaming] = useState(false)
     const [cameraError, setCameraError] = useState<string | null>(null)
 
@@ -64,6 +72,25 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 console.log("Connected to Socket.io via hook")
             })
 
+<<<<<<< HEAD
+=======
+            socket.on("frame_return", (response: any) => {
+                if (!response || typeof response !== "object") return;
+              
+                const posture = response.posture as PostureMetrics["status"];
+              
+                setMetrics(prev => ({
+                  ...prev,
+                  status: posture,
+                  problems: response.issues ?? [],
+                  neckAngle: prev.neckAngle || (posture === "good" ? 15 : 35),
+                  shoulderTilt: prev.shoulderTilt || (posture === "good" ? 95 : 75),
+                  stressScore: prev.stressScore || (posture === "good" ? 25 : 75),
+                }));
+              });
+              
+
+>>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
             // socket.on("frame_return", (response: any) => {
             //     console.log(response["issues"])
             //     if (typeof response === 'object') {
@@ -74,13 +101,18 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
             //             neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
             //             shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
             //             stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),
+<<<<<<< HEAD
 			// 		}
 			// 	))
+=======
+            //         }))
+>>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
             //     } else {
             //         // If backend sends full object later
             //         setMetrics(response)
             //     }
             // })
+<<<<<<< HEAD
 
 			socket.on("frame_return", (response: any) => {
 				console.log(response["issues"]);
@@ -105,6 +137,8 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
 				});
 			});
 			
+=======
+>>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
 
             socket.on("connect_error", (err) => {
                 console.error("Socket connection error:", err)
