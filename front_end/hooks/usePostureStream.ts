@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { useFrameCapture } from "./useFrameCapture"
@@ -20,7 +22,13 @@ interface UsePostureStreamOptions {
 export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOptions) => {
     const videoRef = useRef<HTMLVideoElement | null>(null)
     const socketRef = useRef<Socket | null>(null)
-    const [metrics, setMetrics] = useState<PostureMetrics | null>(null)
+    const [metrics, setMetrics] = useState<PostureMetrics>({
+        neckAngle: 0,
+        shoulderTilt: 0,
+        stressScore: 0,
+        problems: [],
+        status: "good",
+      })
     const [streaming, setStreaming] = useState(false)
     const [cameraError, setCameraError] = useState<string | null>(null)
 
@@ -43,21 +51,37 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
             })
 
             socket.on("frame_return", (response: any) => {
-                console.log(response["issues"])
-                if (typeof response === 'object') {
-                    setMetrics((prev) => ({
-                        ...prev,
-                        status: response["posture"] as "good" | "bad" | "satisfactory",
-                        problems: response["issues"],
-                        neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
-                        shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
-                        stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),
-                    }))
-                } else {
-                    // If backend sends full object later
-                    setMetrics(response)
-                }
-            })
+                if (!response || typeof response !== "object") return;
+              
+                const posture = response.posture as PostureMetrics["status"];
+              
+                setMetrics(prev => ({
+                  ...prev,
+                  status: posture,
+                  problems: response.issues ?? [],
+                  neckAngle: prev.neckAngle || (posture === "good" ? 15 : 35),
+                  shoulderTilt: prev.shoulderTilt || (posture === "good" ? 95 : 75),
+                  stressScore: prev.stressScore || (posture === "good" ? 25 : 75),
+                }));
+              });
+              
+
+            // socket.on("frame_return", (response: any) => {
+            //     console.log(response["issues"])
+            //     if (typeof response === 'object') {
+            //         setMetrics((prev) => ({
+            //             ...prev,
+            //             status: response["posture"] as "good" | "bad" | "satisfactory",
+            //             problems: response["issues"],
+            //             neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
+            //             shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
+            //             stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),
+            //         }))
+            //     } else {
+            //         // If backend sends full object later
+            //         setMetrics(response)
+            //     }
+            // })
 
             socket.on("connect_error", (err) => {
                 console.error("Socket connection error:", err)
