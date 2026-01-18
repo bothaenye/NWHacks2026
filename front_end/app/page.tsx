@@ -20,6 +20,7 @@ export default function PostureDashboard() {
   const neckAngle = metrics?.neckAngle ?? 0
   const spineAlignment = metrics?.shoulderTilt ?? 0
   const screenDistance = metrics?.stressScore ?? 0
+  
 
   const neckData = [12, 13, 15, 14, 15, 16, 15]
   const spineData = [90, 91, 92, 91, 92, 93, 92]
@@ -32,19 +33,15 @@ export default function PostureDashboard() {
   ]
 
   const getNeckStatus = () => {
-    if (neckAngle > 20) return 'error'
+    if (neckAngle > 20) return 'bad'
     if (neckAngle > 15) return 'warning'
     return 'good'
   }
 
-  const getSpineStatus = () => {
-    if (spineAlignment < 85) return 'error'
-    if (spineAlignment < 90) return 'warning'
-    return 'good'
-  }
+  const getStatus = () => metrics?.status ?? 'good'
 
   const getDistanceStatus = () => {
-    if (screenDistance < 50) return 'error'
+    if (screenDistance < 50) return 'bad'
     if (screenDistance < 60) return 'warning'
     return 'good'
   }
@@ -127,11 +124,11 @@ export default function PostureDashboard() {
                 icon={<Activity className="w-4 h-4" />}
               />
               <MetricCard
-                title="Spine Alignment"
+                title="Posture Status"
                 value={spineAlignment}
                 unit="%"
                 data={spineData}
-                status={getSpineStatus()}
+                status={getStatus()}
                 icon={<Activity className="w-4 h-4" />}
               />
               <MetricCard
