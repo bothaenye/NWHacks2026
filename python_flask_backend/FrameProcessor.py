@@ -159,12 +159,6 @@ def getPosture(frame_data):
 	print("Posture:", posture)
 	print("Issues:", issues)
 
-
-	# Show frame
-	cv2.imshow("Frame with Vectors", frame)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
-
 	return posture
 
 getPosture(frame_data)
