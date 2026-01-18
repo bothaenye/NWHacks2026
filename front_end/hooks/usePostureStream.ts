@@ -72,8 +72,6 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 console.log("Connected to Socket.io via hook")
             })
 
-<<<<<<< HEAD
-=======
             socket.on("frame_return", (response: any) => {
                 if (!response || typeof response !== "object") return;
               
@@ -90,7 +88,6 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
               });
               
 
->>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
             // socket.on("frame_return", (response: any) => {
             //     console.log(response["issues"])
             //     if (typeof response === 'object') {
@@ -101,44 +98,12 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
             //             neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
             //             shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
             //             stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),
-<<<<<<< HEAD
-			// 		}
-			// 	))
-=======
             //         }))
->>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
             //     } else {
             //         // If backend sends full object later
             //         setMetrics(response)
             //     }
             // })
-<<<<<<< HEAD
-
-			socket.on("frame_return", (response: any) => {
-				console.log(response["issues"]);
-			
-				setMetrics((prev) => {
-					const newStatus = response.posture as "good" | "bad" | "satisfactory";
-			
-					if (newStatus === "bad" && prev?.status !== "bad") {
-						if (badPostureAudioRef.current) badPostureAudioRef.current.volume = 1.0;
-						badPostureAudioRef.current?.play().catch(() => {});
-						console.log("should play voice");
-					}
-			
-					return {
-						...prev, // keeps any other fields if you need them
-						status: newStatus,
-						problems: response.issues ?? [],
-						neckAngle: response.neck_angle ?? 0,
-						shoulderTilt: response.shoulder_tilt ?? 0,
-						stressScore: response.stress_score ?? 0,
-					};
-				});
-			});
-			
-=======
->>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
 
             socket.on("connect_error", (err) => {
                 console.error("Socket connection error:", err)

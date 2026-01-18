@@ -45,16 +45,10 @@ export default function PostureDashboard() {
   } //metrics?.status ?? 'good'
 
   const getDistanceStatus = () => {
-<<<<<<< HEAD
-    if (screenDistance < 50) return 'bad'
-    if (screenDistance < 60) return 'satisfactory'
-    return 'good'
-=======
     if (!screenDistance) return 'good';
     if (screenDistance < 50) return 'bad';
     if (screenDistance < 60) return 'warning';
     return 'good';
->>>>>>> f744d133ed09d4ebaee70d8c3e45f22ff705a92c
   }
 
   
