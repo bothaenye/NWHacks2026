@@ -8,5 +8,4 @@ def init_events(socketio):
         emitEvents('frame_return', getPosture(obj["frame"]))
     
 def emitEvents(name, obj):
-    print("Gorp")
     emit(name, obj)
