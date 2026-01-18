@@ -156,6 +156,11 @@
   }
 }
 
+.scanlines {
+  position: relative; 
+  overflow: hidden; /* Keeps the scanlines contained */
+}
+
 .scanlines::after {
   content: '';
   position: absolute;
@@ -163,36 +168,25 @@
   pointer-events: none;
   z-index: 5;
 
-  background: repeating-linear-gradient(
+  --line-height: 6px;
+
+  background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.12) 0px,
-    rgba(0, 0, 0, 0.12) 2px,
-    rgba(0, 0, 0, 0) 4px,
-    rgba(0, 0, 0, 0) 8px
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.2) 50%, 
+    transparent 50%,
+    transparent 100%
   );
+  
+  background-size: 100% var(--line-height); 
 
-  mix-blend-mode: soft-light;
+  animation: scanline-scroll 0.5s linear infinite;
 }
 
-@keyframes scan {
-  from { background-position: 0 0; }
-  to   { background-position: 0 4px; }
-}
-
-.scanlines::after {
-  animation: scan 6s linear infinite;
-}
-
-/* Base overlay setup */
-.video-tint-good::before,
-.video-tint-warning::before,
-.video-tint-bad::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  mix-blend-mode: soft-light;
+@keyframes scanline-scroll {
+  to {
+    background-position: 0 var(--line-height);
+  }
 }
 
 /* GOOD — Fallout terminal green */
