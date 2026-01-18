@@ -128,10 +128,10 @@ def getPosture(frame_data):
 		issues.append("Uneven shoulders")
 
 	if not issues:
-		posture = "Good posture"
+		posture = "good"
 		color = (0, 255, 0)
 	else:
-		posture = "Poor posture"
+		posture = "bad"
 		color = (0, 0, 255)
 
 	# Draw result on frame
