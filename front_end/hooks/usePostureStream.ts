@@ -26,6 +26,28 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
 
     const { captureFrame } = useFrameCapture()
 
+	// audio
+	const badPostureAudioRef = useRef<HTMLAudioElement | null>(null)
+    if (!badPostureAudioRef.current) {
+        badPostureAudioRef.current = new Audio("/uncurl.mp3")
+    }
+
+	// Unlock audio once streaming starts (browser requires a user interaction)
+	useEffect(() => {
+		if (streaming && badPostureAudioRef.current) {
+			badPostureAudioRef.current.play()
+				.then(() => {
+					badPostureAudioRef.current?.pause(); // pause immediately
+					if (badPostureAudioRef.current) badPostureAudioRef.current.currentTime = 0; // reset
+				})
+				.catch(() => {
+					console.log("Audio unlock failed");
+				});
+		}
+	}, [streaming]);
+
+	// end of audio addition
+
     const startStreaming = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true })
@@ -42,22 +64,47 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 console.log("Connected to Socket.io via hook")
             })
 
-            socket.on("frame_return", (response: any) => {
-                console.log(response["issues"])
-                if (typeof response === 'object') {
-                    setMetrics((prev) => ({
-                        ...prev,
-                        status: response["posture"] as "good" | "bad" | "satisfactory",
-                        problems: response["issues"],
-                        neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
-                        shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
-                        stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),
-                    }))
-                } else {
-                    // If backend sends full object later
-                    setMetrics(response)
-                }
-            })
+            // socket.on("frame_return", (response: any) => {
+            //     console.log(response["issues"])
+            //     if (typeof response === 'object') {
+            //         setMetrics((prev) => ({
+            //             ...prev,
+            //             status: response["posture"] as "good" | "bad" | "satisfactory",
+            //             problems: response["issues"],
+            //             neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
+            //             shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
+            //             stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),
+			// 		}
+			// 	))
+            //     } else {
+            //         // If backend sends full object later
+            //         setMetrics(response)
+            //     }
+            // })
+
+			socket.on("frame_return", (response: any) => {
+				console.log(response["issues"]);
+			
+				setMetrics((prev) => {
+					const newStatus = response.posture as "good" | "bad" | "satisfactory";
+			
+					if (newStatus === "bad" && prev?.status !== "bad") {
+						if (badPostureAudioRef.current) badPostureAudioRef.current.volume = 1.0;
+						badPostureAudioRef.current?.play().catch(() => {});
+						console.log("should play voice");
+					}
+			
+					return {
+						...prev, // keeps any other fields if you need them
+						status: newStatus,
+						problems: response.issues ?? [],
+						neckAngle: response.neck_angle ?? 0,
+						shoulderTilt: response.shoulder_tilt ?? 0,
+						stressScore: response.stress_score ?? 0,
+					};
+				});
+			});
+			
 
             socket.on("connect_error", (err) => {
                 console.error("Socket connection error:", err)

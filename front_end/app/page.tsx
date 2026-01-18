@@ -43,10 +43,11 @@ export default function PostureDashboard() {
 
   const getDistanceStatus = () => {
     if (screenDistance < 50) return 'bad'
-    if (screenDistance < 60) return 'warning'
+    if (screenDistance < 60) return 'satisfactory'
     return 'good'
   }
 
+  
   const handleStartStop = async () => {
     if (!streaming) {
       await startStreaming() // starts camera + streaming
