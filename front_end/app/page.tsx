@@ -77,15 +77,18 @@ export default function PostureDashboard() {
 
         {/* Main Content - Camera */}
         <div className="relative">
-          <Card
-            className={`relative aspect-video scanlines bg-card/30 backdrop-blur-sm border-2 overflow-hidden transition-all duration-300 ${
+        <Card
+          className={`relative aspect-video scanlines bg-card/30 backdrop-blur-sm border-2 overflow-hidden transition-all duration-300 ${
             streaming
-            ? neckAngle > 20
-            ? 'neon-glow-red border-destructive/50'
-            : 'neon-glow border-primary/50'
-            : 'border-border'
-             }`}
-          >
+              ? getStatus() === 'bad'
+                ? 'neon-glow-red border-destructive/50 video-tint-bad'
+                : getStatus() === 'satisfactory'
+                ? 'neon-glow-yellow border-yellow-500/50 video-tint-warning'
+                : 'neon-glow video-tint-good'
+              : 'border-border'
+          }`}
+>
+
             {/* Video */}
             <video
               ref={videoRef}
@@ -120,14 +123,16 @@ export default function PostureDashboard() {
                 status={getNeckStatus()}
                 icon={<Activity className="w-4 h-4" />}
               />
-              <MetricCard
+
+              {/* <MetricCard
                 title="Posture Status"
                 value={spineAlignment}
                 unit="%"
                 data={spineData}
                 status={getStatus()}
                 icon={<Activity className="w-4 h-4" />}
-              />
+              /> */}
+
               <MetricCard
                 title="Distance from Screen"
                 value={screenDistance}
