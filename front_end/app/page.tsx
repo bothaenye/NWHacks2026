@@ -66,7 +66,7 @@ export default function PostureDashboard() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-              <Activity className="w-8 h-8 text-primary" />
+              <img src="/favicon.svg" className="w-16 h-16"/>
               <span className="text-balance">Shrimply</span>
             </h1>
             <p className="text-muted-foreground mt-1">
