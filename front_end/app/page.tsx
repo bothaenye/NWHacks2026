@@ -19,12 +19,10 @@ export default function PostureDashboard() {
 
   const neckAngle = metrics?.neckAngle ?? 0
   const spineAlignment = metrics?.shoulderTilt ?? 0
-  const screenDistance = metrics?.stressScore ?? 0
   
 
   const neckData = [12, 13, 15, 14, 15, 16, 15]
   const spineData = [90, 91, 92, 91, 92, 93, 92]
-  const distanceData = [60, 62, 65, 64, 65, 66, 65]
 
   const tips = [
     { id: 1, text: 'Shoulders back, chest open', priority: 'high' },
@@ -40,12 +38,6 @@ export default function PostureDashboard() {
 
   const getStatus = () => metrics?.status ?? 'good'
 
-  const getDistanceStatus = () => {
-    if (screenDistance < 50) return 'bad'
-    if (screenDistance < 60) return 'warning'
-    return 'good'
-  }
-
   const handleStartStop = async () => {
     if (!streaming) {
       await startStreaming() // starts camera + streaming
@@ -53,10 +45,6 @@ export default function PostureDashboard() {
       stopStreaming()
       setIsVoiceActive(false)
     }
-  }
-
-  const handleCalibrate = () => {
-    console.log('Calibrating posture baseline...')
   }
 
   return (
@@ -131,14 +119,6 @@ export default function PostureDashboard() {
                 status={getStatus()}
                 icon={<Activity className="w-4 h-4" />}
               />
-              <MetricCard
-                title="Distance from Screen"
-                value={screenDistance}
-                unit="cm"
-                data={distanceData}
-                status={getDistanceStatus()}
-                icon={<Activity className="w-4 h-4" />}
-              />
 
               {/* Quick Tips */}
               <Card className="p-4 glassmorphism border-border/50">
@@ -192,17 +172,6 @@ export default function PostureDashboard() {
                     <Camera className="w-5 h-5 mr-2" /> Start Monitoring
                   </>
                 )}
-              </Button>
-
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={handleCalibrate}
-                disabled={!streaming}
-                className="rounded-full px-8 border-primary/30 hover:bg-primary/10 bg-transparent"
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                Calibrate Posture
               </Button>
 
               <Button
