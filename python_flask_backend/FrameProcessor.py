@@ -166,5 +166,3 @@ def getPosture(frame_data):
 	cv2.destroyAllWindows()
 
 	return posture
-
-getPosture(frame_data)
