@@ -43,9 +43,10 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 console.log("Connected to Socket.io via hook")
             })
 
-            socket.on("message", (response: any) => {
+            socket.on("frame_return", (response: any) => {
                 // Backend currently sends string "good" | "bad"
                 // Map string response to PostureMetrics object for consistency
+                console.log(response)
                 if (typeof response === 'string') {
                     setMetrics((prev) => ({
                         ...prev,
