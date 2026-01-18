@@ -4,6 +4,16 @@ import numpy as np
 import base64
 #from frameDataQ import frame_data
 
+mp_pose = mp.solutions.pose
+mp_drawing = mp.solutions.drawing_utils
+
+pose = mp_pose.Pose(
+	static_image_mode=True,
+	model_complexity=1,
+	enable_segmentation=False,
+	min_detection_confidence=0.5
+	)
+
 # Decode base64 frame from frontend
 def getPosture(frame_data):
 	if "," in frame_data:
@@ -13,16 +23,6 @@ def getPosture(frame_data):
 	nparr = np.frombuffer(frame_bytes, np.uint8)
 	frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)  # BGR format
 
-	# MediaPipe Pose setup
-	mp_pose = mp.solutions.pose
-	mp_drawing = mp.solutions.drawing_utils
-
-	pose = mp_pose.Pose(
-		static_image_mode=True,
-		model_complexity=1,
-		enable_segmentation=False,
-		min_detection_confidence=0.5
-	)
 
 	# Convert BGR to RGB for MediaPipe
 	image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
