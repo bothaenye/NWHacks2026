@@ -73,9 +73,6 @@ export default function PostureDashboard() {
               Real-time posture monitoring
             </p>
           </div>
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Settings className="w-5 h-5" />
-          </Button>
         </div>
 
         {/* Main Content - Camera */}
