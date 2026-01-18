@@ -159,4 +159,4 @@ def getPosture(frame_data):
 	print("Posture:", posture)
 	print("Issues:", issues)
 
-	return posture
+	return {"posture" : posture, "issues" : issues}
