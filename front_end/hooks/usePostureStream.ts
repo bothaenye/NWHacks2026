@@ -24,7 +24,6 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
 
     const { captureFrame } = useFrameCapture()
 
-    // Start the camera and streaming
     const startStreaming = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true })
@@ -33,9 +32,6 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 await videoRef.current.play()
             }
 
-            // Initialize Socket.io connection
-            // Extract base URL from backendUrl if it contains path, or assume backendUrl is root
-            // For now, using the URL passed in directly (e.g. http://localhost:5000)
             const socket = io(backendUrl)
             socketRef.current = socket
 
@@ -44,14 +40,11 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
             })
 
             socket.on("frame_return", (response: any) => {
-                // Backend currently sends string "good" | "bad"
-                // Map string response to PostureMetrics object for consistency
                 console.log(response)
                 if (typeof response === 'string') {
                     setMetrics((prev) => ({
                         ...prev,
                         status: response as "good" | "bad",
-                        // Keep previous numeric values if just string update, or default 
                         neckAngle: prev?.neckAngle ?? (response === 'good' ? 15 : 35),
                         shoulderTilt: prev?.shoulderTilt ?? (response === 'good' ? 95 : 75),
                         stressScore: prev?.stressScore ?? (response === 'good' ? 25 : 75),
@@ -103,7 +96,7 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
         }, 1000 / fps)
 
         return () => clearInterval(interval)
-    }, [streaming, fps, captureFrame]) // Added captureFrame to deps
+    }, [streaming, fps, captureFrame]) 
 
     return { videoRef, metrics, streaming, startStreaming, stopStreaming, cameraError }
 }
