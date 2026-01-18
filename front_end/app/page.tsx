@@ -183,7 +183,7 @@ export default function PostureDashboard() {
                             <Button
                                 size="lg"
                                 onClick={handleStartStop}
-                                className={`rounded-full text-xs lg:text-sm px-8 ${streaming
+                                className={`rounded-full transition-transform hover:scale-105 text-xs lg:text-sm px-8 ${streaming
                                     ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
                                     : 'bg-primary hover:bg-primary/90 text-primary-foreground'
                                     }`}
@@ -212,12 +212,12 @@ export default function PostureDashboard() {
               </Button> */}
 
 
-                            <Button
+                            {/* <Button
                                 size="lg"
                                 variant="outline"
                                 onClick={() => setIsVoiceActive(!isVoiceActive)}
                                 disabled={!streaming}
-                                className={`rounded-full px-8 border-primary/30 ${isVoiceActive ? 'bg-primary/20 border-primary' : 'hover:bg-primary/10'
+                                className={`rounded-full transition-transform hover:scale-105 px-8 border-primary/30 ${isVoiceActive ? 'bg-primary/20 border-primary' : 'hover:bg-primary/10'
                                     }`}
                             >
                                 {isVoiceActive ? (
@@ -229,7 +229,7 @@ export default function PostureDashboard() {
                                         <Mic className="w-5 h-5 mr-2" /> Enable Voice Coach
                                     </>
                                 )}
-                            </Button>
+                            </Button> */}
                         </div>
                     </Card>
                 </div>
