@@ -10,6 +10,5 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 init_events(socketio)
 init_routes(app)
 
-
 if __name__ == "__main__":
     socketio.run(app, debug=True)
