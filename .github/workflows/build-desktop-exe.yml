@@ -1,4 +1,4 @@
-name: Build desktop .exe
+name: Build desktop app
 
 on:
   workflow_dispatch:
@@ -65,5 +65,69 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: python_flask_backend/dist/shrimply-desktop.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-macos-app:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build static frontend export
+        working-directory: front_end
+        run: |
+          npm ci
+          npm run build
+        env:
+          BUILD_TARGET: desktop
+
+      - name: Copy frontend build into backend
+        run: cp -R front_end/out python_flask_backend/static_frontend
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
+        working-directory: python_flask_backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build executable with PyInstaller
+        working-directory: python_flask_backend
+        run: |
+          pyinstaller --onefile --name shrimply-desktop \
+            --add-data "static_frontend:static_frontend" \
+            --collect-all mediapipe \
+            --collect-all cv2 \
+            --collect-all engineio \
+            --collect-all socketio \
+            --collect-all flask_socketio \
+            --collect-all simple_websocket \
+            --collect-all wsproto \
+            posture_main_file.py
+
+      - name: Zip the binary (preserves the executable bit)
+        working-directory: python_flask_backend/dist
+        run: |
+          chmod +x shrimply-desktop
+          zip shrimply-desktop-macos.zip shrimply-desktop
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shrimply-desktop-macos
+          path: python_flask_backend/dist/shrimply-desktop-macos.zip
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: python_flask_backend/dist/shrimply-desktop-macos.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
