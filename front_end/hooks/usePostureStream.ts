@@ -42,9 +42,11 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
 
 
 	const badPostureAudioRef = useRef<HTMLAudioElement | null>(null)
-    if (!badPostureAudioRef.current) {
-        badPostureAudioRef.current = new Audio("/uncurl.mp3")
-    }
+    useEffect(() => {
+        if (!badPostureAudioRef.current) {
+            badPostureAudioRef.current = new Audio("/uncurl.mp3")
+        }
+    }, [])
 
 	"use client";
 
