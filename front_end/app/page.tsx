@@ -11,7 +11,7 @@ import { usePostureStream } from '@/hooks/usePostureStream'
 
 export default function PostureDashboard() {
   const { videoRef, metrics, streaming, startStreaming, stopStreaming } =
-    usePostureStream({ backendUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/', fps: 1 })
+    usePostureStream({ backendUrl: process.env.NEXT_PUBLIC_API_URL, fps: 1 })
   const { captureFrame } = useFrameCapture()
 
   const [isVoiceActive, setIsVoiceActive] = useState(false)

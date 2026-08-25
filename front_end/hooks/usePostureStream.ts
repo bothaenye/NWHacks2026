@@ -15,7 +15,7 @@ export interface PostureMetrics {
 }
 
 interface UsePostureStreamOptions {
-    backendUrl: string
+    backendUrl?: string
     fps?: number
 }
 
@@ -96,8 +96,8 @@ export const usePostureStream = ({ backendUrl, fps = 2 }: UsePostureStreamOption
                 await videoRef.current.play()
             }
 
-            //const socket = io(backendUrl)
-            const socket = io(process.env.NEXT_PUBLIC_API_URL || backendUrl)
+            // No URL set -> socket.io connects to the same origin the page was served from.
+            const socket = io(process.env.NEXT_PUBLIC_API_URL || backendUrl || undefined)
             socketRef.current = socket
 
             socket.on("connect", () => {
