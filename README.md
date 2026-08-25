@@ -6,4 +6,6 @@ Our application is a posture monitor, tracking your posture in real-time to give
 Link to website (note that this currently does not run due to server updates):
 https://nwhax26front2.vercel.app/
 
-Downloadable windows app: https://github.com/bothaenye/NWHacks2026/releases/tag/v1.0.0
+Downloadable windows app (not confirmed to work): https://github.com/bothaenye/NWHacks2026/releases/tag/v1.0.0
+
+**Downloadable MacOS app (confirmed to work): https://github.com/bothaenye/NWHacks2026/releases/tag/v1.0.2**
